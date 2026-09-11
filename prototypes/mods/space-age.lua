@@ -1,4 +1,4 @@
-local turbo_tier = {
+ModularSplitters.build_tier({ --turbo
     name = "turbo",
     transport_belt = "turbo-transport-belt",
     color = {155, 182, 0},
@@ -21,6 +21,6 @@ local turbo_tier = {
             {type = "item", name = "processing-unit", amount = 5},
             {type = "fluid", name = "lubricant", amount = 50}
         },
-    },
-
-}
+        energy_required = 2
+    }
+})
