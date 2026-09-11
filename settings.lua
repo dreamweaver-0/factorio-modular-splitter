@@ -1,6 +1,6 @@
 data:extend{
     {
-        name = "manifold-splitter-mode"
+        name = "manifold-splitter-mode",
         type = "string-setting",
         setting_type = "startup",
         order = "a",
@@ -20,8 +20,8 @@ data:extend{
         type = "string-setting",
         setting_type = "startup",
         order = "c",
-        default_value = "scaling",
-        allowed_values = {"scaling", "fixed", "infinite"}
+        default_value = "Fixed",
+        allowed_values = {"Fixed", "Scale with Quality"}
     },
     {
         name = "manifold-splitter-extension-limit-multiplier",
