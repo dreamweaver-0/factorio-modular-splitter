@@ -1,6 +1,6 @@
 data:extend{
     {
-        name = "manifold-splitter-mode",
+        name = "modular-splitter-mode",
         type = "string-setting",
         setting_type = "startup",
         order = "a",
@@ -8,7 +8,7 @@ data:extend{
         allowed_values = {"normal", "lubricated"},
     },
     {
-        name = "manifold-splitter-cost-multiplier",
+        name = "modular-splitter-cost-multiplier",
         type = "double-setting",
         setting_type = "startup",
         order = "b",
@@ -16,7 +16,7 @@ data:extend{
         allowed_values = {0.25, 0.5, 1.0, 2.0, 4.0}
     },
     {
-        name = "manifold-splitter-extension-modes",
+        name = "modular-splitter-extension-modes",
         type = "string-setting",
         setting_type = "startup",
         order = "c",
@@ -24,7 +24,7 @@ data:extend{
         allowed_values = {"Fixed", "Scale with Quality"}
     },
     {
-        name = "manifold-splitter-extension-limit-multiplier",
+        name = "modular-splitter-extension-limit-multiplier",
         type = "double-setting",
         setting_type = "startup",
         order = "d",
