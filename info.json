@@ -1,8 +1,8 @@
 {
-    "name": "manifold-splitter",
+    "name": "modular-splitter",
     "version": "0.1.0",
     "author": "Dreamweaver_0",
-    "title": "Manifold Splitter",
+    "title": "modular Splitter",
     "description": "An advanced, modular splitter that can be extended in either direction. Maximum number of parallel in/outputs scales with belt level.",
     "factorio_version": "2.0",
     "dependencies": [
