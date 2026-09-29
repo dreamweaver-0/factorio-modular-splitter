@@ -39,7 +39,7 @@ local function build_entity(tier)
 
     data:extend {entity}
 
-    return data.raw["modular_splitter"][tier.name]
+    return data.raw["modular-splitter"][tier.name]
 end
 
 local function build_item(tier)
@@ -49,7 +49,10 @@ local function build_item(tier)
             name = tier.name,
             type = "item",
             icons = {
-
+                {
+                    icon = "graphics/icons/modular-splitter-item.jpg",
+                    icon_size = 256
+                }
             },
             stack_size = 64,
             default_import_location = tier.default_import_location,
@@ -63,9 +66,15 @@ end
 
 local function build_recipe(tier)
     local cost_mult = settings.startup["modular-splitter-cost-multiplier"].value
-    local lubed = settings.startup["modular-splitter-lubricated"].value
+    local lubed = settings.startup["modular-splitter-mode"].value
     
     local recipe = tier.recipe
+    if not tier.recipe.type then
+        tier.recipe.type = "recipe"
+    end
+    if not tier.recipe.name then
+        tier.recipe.name = "recipe"
+    end
     if cost_mult ~= 1 then
         for _, item in pairs(recipe.ingredients) do
             item.amount = item.amount * cost_mult
@@ -117,7 +126,7 @@ function ModularSplitters.build_tier(data)
     else
         data.name = data.name .. "-modular-splitter"
     end
-    data.transport_belt = data.raw["transport-belt"][data.transport_belt]
+    --data.transport_belt = data.raw["transport-belt"][data.transport_belt]
     
     local entity = build_entity(data)
     local item = build_item(data)
