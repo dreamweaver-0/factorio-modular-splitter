@@ -1,0 +1,41 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Package Factorio mod",
+            "type": "shell",
+            "command": "powershell.exe",
+            "args": [
+                "-NoProfile",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-File",
+                "${workspaceFolder}\\.vscode\\package-mod.ps1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Launch Factorio via Steam",
+            "type": "shell",
+            "command": "powershell.exe",
+            "args": [
+                "-NoProfile",
+                "-Command",
+                "Start-Process 'steam://rungameid/427520'"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "Package and launch Factorio via Steam",
+            "dependsOn": [
+                "Package Factorio mod",
+                "Launch Factorio via Steam"
+            ],
+            "dependsOrder": "sequence",
+            "problemMatcher": []
+        }
+    ]
+}

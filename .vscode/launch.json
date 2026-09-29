@@ -8,7 +8,14 @@
         {
             "type": "factorio",
             "request": "launch",
-            "name": "Factorio Debug Adapter"
+            "name": "Factorio Debug Adapter",
+            "preLaunchTask": "Package Factorio mod"
+        },
+        {
+            "type": "factorio",
+            "request": "launch",
+            "name": "Factorio Launch and Debug",
+            "preLaunchTask": "Package and launch Factorio via Steam"
         }
     ]
 }
