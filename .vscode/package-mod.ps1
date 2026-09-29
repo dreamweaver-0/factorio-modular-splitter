@@ -10,7 +10,7 @@ $modsDirectory = Join-Path $env:APPDATA 'Factorio\mods'
 New-Item -ItemType Directory -Path $modsDirectory -Force | Out-Null
 $modDirectoryName = "{0}_{1}" -f $metadata.name, $metadata.version
 $destination = Join-Path $modsDirectory "$modDirectoryName.zip"
-$temporaryArchive = Join-Path ([System.IO.Path]::GetTempPath()) ("{0}.zip" -f [guid]::NewGuid())
+$temporaryArchive = Join-Path $modsDirectory (".{0}.zip" -f [guid]::NewGuid())
 
 Add-Type -AssemblyName System.IO.Compression
 Add-Type -AssemblyName System.IO.Compression.FileSystem
@@ -37,7 +37,10 @@ try {
         $archive.Dispose()
     }
 
-    Move-Item -LiteralPath $temporaryArchive -Destination $destination -Force
+    if ([System.IO.File]::Exists($destination)) {
+        Remove-Item -LiteralPath $destination -Force
+    }
+    [System.IO.File]::Move($temporaryArchive, $destination)
 }
 finally {
     if (Test-Path -LiteralPath $temporaryArchive) {
