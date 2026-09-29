@@ -5,8 +5,10 @@ debug_log = log
 require("prototypes/modular-splitter")
 
 local crafting_categories = {"crafting"}
+local express_upgrade = mods["space-age"] and "turbo-modular-splitter"
+
 if mods["space-age"] then
-    crafting_categories.insert("crafting-with-fluid")
+    --crafting_categories.insert("crafting-with-fluid")
 end
 
 ModularSplitters.build_tier({ --base
@@ -35,8 +37,9 @@ ModularSplitters.build_tier({ --base
             {type = "item", name = "iron-plate", amount = 8},
             {type = "item", name = "electronic-circuit", amount = 6}
         },
-        energy_required = 3
-    }
+        energy_required = 8
+    },
+    next_upgrade = "fast-transport-belt"
 })
 
 ModularSplitters.build_tier({ --fast
@@ -66,8 +69,9 @@ ModularSplitters.build_tier({ --fast
             {type = "item", name = "iron-plate", amount = 8},
             {type = "item", name = "electronic-circuit", amount = 6}
         },
-        energy_required = 3
-    }
+        energy_required = 8
+    },
+    next_upgrade = "express-transport-belt"
 })
 
 ModularSplitters.build_tier({ --express
@@ -98,8 +102,9 @@ ModularSplitters.build_tier({ --express
             {type = "item", name = "iron-plate", amount = 8},
             {type = "item", name = "electronic-circuit", amount = 6}
         },
-        energy_required = 3
-    }
+        energy_required = 8
+    },
+    next_upgrade = express_upgrade
 })
 
 if mods["space-age"] then
