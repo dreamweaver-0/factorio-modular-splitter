@@ -4,17 +4,21 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-        
         {
             "type": "factorio",
             "request": "launch",
-            "name": "Factorio Debug Adapter",
+            "name": "Factorio"
+        },
+        {
+            "type": "factorio",
+            "request": "launch",
+            "name": "Factorio Package and Install Mod",
             "preLaunchTask": "Package Factorio mod"
         },
         {
             "type": "factorio",
             "request": "launch",
-            "name": "Factorio Launch and Debug",
+            "name": "Factorio Package > Install > Launch",
             "preLaunchTask": "Package and launch Factorio via Steam"
         }
     ]
