@@ -1,16 +1,20 @@
 local mode = settings.startup["modular-splitter-modes"]
 local cost_mult = settings.startup["modular-splitter-cost-multiplier"]
 
+
+
 local function build_entity(tier)
     local structure = tier.structure or "modular-splitter"
     
     local entity = {
         name = tier.name,
-        type = "modular-splitter",
+        type = "transport-belt",
         icons = {
-
-        },
-        icon_size = 64,
+                {
+                    icon = "graphics/icons/modular-splitter-item.jpg",
+                    icon_size = 256
+                }
+            },
         flags = {"placeable-neutral", "player-creation"},
         minable = {
             mining_time = 0.5,
@@ -39,7 +43,7 @@ local function build_entity(tier)
 
     data:extend {entity}
 
-    return data.raw["modular-splitter"][tier.name]
+    return data.raw["transport-belt"][tier.name]
 end
 
 local function build_item(tier)
@@ -73,7 +77,7 @@ local function build_recipe(tier)
         tier.recipe.type = "recipe"
     end
     if not tier.recipe.name then
-        tier.recipe.name = "recipe"
+        tier.recipe.name = tier.name .. "-recipe"
     end
     if cost_mult ~= 1 then
         for _, item in pairs(recipe.ingredients) do
@@ -109,7 +113,6 @@ local function build_tech(tier)
 end
 
 ModularSplitters = ModularSplitters or {} --declaring global func?
-
 function ModularSplitters.build_tier(data)
     if not data.color then
         debug_log("No color provided, using default")
@@ -140,3 +143,5 @@ function ModularSplitters.build_tier(data)
 
     return {loader = entity, item = item, recipe = recipe, technology = tech}
 end
+
+require("vanilla")

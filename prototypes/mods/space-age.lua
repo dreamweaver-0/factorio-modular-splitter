@@ -21,6 +21,12 @@ ModularSplitters.build_tier({ --turbo
             {type = "item", name = "processing-unit", amount = 5},
             {type = "fluid", name = "lubricant", amount = 50}
         },
-        energy_required = 2
+        energy_required = 8,
+        icons = {
+            {
+                icon = "graphics/technology/modular-splitter.png",
+                icon_size = 256
+            }
+        }
     }
 })
