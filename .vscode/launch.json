@@ -7,7 +7,8 @@
         {
             "type": "factorio",
             "request": "launch",
-            "name": "Factorio"
+            "name": "Factorio Mod Toolkit (default mods directory)",
+            "factorioArgs": []
         },
         {
             "type": "factorio",
