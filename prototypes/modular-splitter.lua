@@ -1,10 +1,43 @@
 local mode = settings.startup["modular-splitter-modes"]
 local cost_mult = settings.startup["modular-splitter-cost-multiplier"]
+local BASE_NAME = "modular-splitter"
 
+local function build_item(tier)
+    
+    data:extend {
+        {
+            name = tier.name,
+            type = "item",
+            icons = {
+                {
+                    icon = "graphics/icons/modular-splitter-item.jpg",
+                    icon_size = 256
+                }
+            },
+            stack_size = 64,
+            default_import_location = tier.default_import_location,
+            subgroup = tier.subgroup or "transport_belt",
+            place_result = tier.name
+        }
+    }
 
+    return data.raw.item[tier.name]
+end
 
 local function build_entity(tier)
-    local structure = tier.structure or "modular-splitter"
+    local entity = table.deepcopy(data.raw["transport-belt"][BASE_NAME]) --[[{
+        type = "transport-belt-connectable",
+        name = tier.name,
+        speed = 100,
+        icons = {
+            {
+                icon = "graphics/icons/modular-splitter-item.jpg",
+                icon_size = 256
+            }
+        },
+
+    }]]
+    --[[ local structure = tier.structure or "modular-splitter"
     
     local entity = {
         name = tier.name,
@@ -43,29 +76,7 @@ local function build_entity(tier)
 
     data:extend {entity}
 
-    return data.raw["transport-belt"][tier.name]
-end
-
-local function build_item(tier)
-    
-    data:extend {
-        {
-            name = tier.name,
-            type = "item",
-            icons = {
-                {
-                    icon = "graphics/icons/modular-splitter-item.jpg",
-                    icon_size = 256
-                }
-            },
-            stack_size = 64,
-            default_import_location = tier.default_import_location,
-            subgroup = tier.subgroup or "transport_belt",
-            place_result = tier.name
-        }
-    }
-
-    return data.raw.item[tier.name]
+    return data.raw["transport-belt"][tier.name] ]]
 end
 
 local function build_recipe(tier)
@@ -113,28 +124,28 @@ local function build_tech(tier)
 end
 
 ModularSplitters = ModularSplitters or {} --declaring global func?
-function ModularSplitters.build_tier(data)
-    if not data.color then
+function ModularSplitters.build_tier(prototype)
+    --[[if not prototype.color then
         debug_log("No color provided, using default")
-        data.color = {r = 1.0, g = 1.0, b = 1.0}
+        prototype.color = {r = 1.0, g = 1.0, b = 1.0}
     end
-    for k, v in pairs(data) do --check for empty values; is this necessary?
+    for k, v in pairs(prototype) do --check for empty values; is this necessary?
         if not v then
             debug_log("Attempted to build tier with empty value for "..k)
             return
         end
     end
-    if data.name == "" then --prefix belt tier
-        data.name = "modular-splitter"
+    if prototype.name == "" then --prefix belt tier
+        prototype.name = "modular-splitter"
     else
-        data.name = data.name .. "-modular-splitter"
+        prototype.name = prototype.name .. "-modular-splitter"
     end
-    --data.transport_belt = data.raw["transport-belt"][data.transport_belt]
+    --prototype.transport_belt = data.raw["transport-belt"][prototype.transport_belt]
     
-    local entity = build_entity(data)
-    local item = build_item(data)
-    local recipe = build_recipe(data)
-    local tech = build_tech(data)
+    local entity = build_entity(prototype)
+    local item = build_item(prototype)
+    local recipe = build_recipe(prototype)
+    local tech = build_tech(prototype)
 
     if tech and recipe then
         tech.effects = tech.effects or {}
@@ -142,6 +153,5 @@ function ModularSplitters.build_tier(data)
     end
 
     return {loader = entity, item = item, recipe = recipe, technology = tech}
+    ]]
 end
-
-require("vanilla")
