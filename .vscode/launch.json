@@ -13,13 +13,13 @@
         {
             "type": "factorio",
             "request": "launch",
-            "name": "Factorio Package and Install Mod",
+            "name": "Factorio Package Mod",
             "preLaunchTask": "Package Factorio mod"
         },
         {
             "type": "factorio",
             "request": "launch",
-            "name": "Factorio Package > Install > Launch",
+            "name": "Factorio Package > Launch",
             "preLaunchTask": "Package and launch Factorio via Steam"
         }
     ]
