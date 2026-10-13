@@ -155,6 +155,10 @@ local function loader_name(entity)
     end
 end
 
+local function buffer_name(entity)
+    return entity.name .. "-buffer"
+end
+
 -- Determines the end positions where loaders should be placed and oriented
 local function end_positions(entity)
     local v = DIR_VECTOR[entity.direction]
@@ -214,7 +218,7 @@ local function line_members(entity)
             local n = splitter_at(entity.surface, p)
             local nb = n and buffer_of(n)
             if not (n and n.force == entity.force and n.direction % 8 == entity.direction % 8
-                and nb and nb.link_id == id) then
+                and nb and nb.name == buffer.name and nb.link_id == id) then
                 break
             end
             if sign == -1 then
@@ -309,7 +313,7 @@ end
 -- Creates a new buffer entity associated with the given splitter
 local function create_buffer(entity)
     return entity.surface.create_entity({
-        name = CONST.buffer_name,
+        name = buffer_name(entity),
         position = entity.position,
         force = entity.force,
         create_build_effect_smoke = false
@@ -318,7 +322,7 @@ end
 
 -- Creates a single loader for the splitter segment
 local function create_loader(entity, position, loader_type)
-    return entity.surface.create_entity({
+    local loader = entity.surface.create_entity({
         name = loader_name(entity),
         position = position,
         direction = entity.direction,
@@ -326,6 +330,10 @@ local function create_loader(entity, position, loader_type)
         force = entity.force,
         create_build_effect_smoke = false
     })
+    if loader then
+        loader.update_connections()
+    end
+    return loader
 end
 
 local function create_loader_pair(entity, rec)
@@ -338,7 +346,8 @@ local function update_loader_orientation(entity, rec)
     for _, side in ipairs(LOADER_SIDES) do
         local loader = rec[side]
         if loader and loader.valid then
-            loader.loader_type = side == DIR_NAME[entity.direction] and "output" or "input"
+            loader.loader_type = side == DIR_NAME[entity.direction] and "input" or "output"
+            loader.update_connections()
         end
     end
 end
@@ -560,7 +569,7 @@ local function purge_strays(entity)
     local back, front = end_positions(entity)
     for _, pos in ipairs({ entity.position, back, front }) do
         for _, e in pairs(entity.surface.find_entities_filtered({
-            name = { CONST.buffer_name, loader_name(entity) },
+            name = { buffer_name(entity), loader_name(entity) },
             area = small_area(pos, 0.2)
         })) do
         e.destroy()
@@ -689,7 +698,10 @@ local function attach(entity, player_index)
 
     local mergeable = {}
     for _, n in ipairs(found) do
-        if n.direction == entity.direction then mergeable[#mergeable + 1] = n end
+        local neighbor_buffer = buffer_of(n)
+        if n.direction == entity.direction and neighbor_buffer and neighbor_buffer.name == buffer.name then
+            mergeable[#mergeable + 1] = n
+        end
     end
 
     local overflow = {}

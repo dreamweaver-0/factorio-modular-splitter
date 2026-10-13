@@ -34,6 +34,10 @@ function ModularSplitters.loader_name(prefix)
     return ModularSplitters.entity_name(prefix) .. "-loader"
 end
 
+function ModularSplitters.buffer_name(prefix)
+    return ModularSplitters.entity_name(prefix) .. "-buffer"
+end
+
 local function icons_for(tier)
     local base = data.raw["item"]["splitter"]
     return { { icon = base.icon, icon_size = base.icon_size or 64, tint = tier.tint } }
@@ -93,6 +97,7 @@ end
 local function build_entity(tier)
     local name = ModularSplitters.entity_name(tier.name)
     local loader_name = ModularSplitters.loader_name(tier.name)
+    local buffer_name = ModularSplitters.buffer_name(tier.name)
     local belt = data.raw["transport-belt"][tier.belt]
     assert(belt, "modular-splitter: unknown belt tier '" .. tostring(tier.belt) .. "'")
 
@@ -133,7 +138,26 @@ local function build_entity(tier)
         }
     }
 
-    data:extend({ main, loader })
+    local buffer = {
+        type = "linked-container",
+        name = buffer_name,
+        icons = icons_for(tier),
+        --flags = HIDDEN_FLAGS,
+        --hidden = true,
+        selectable_in_game = true,
+        max_health = 170,
+        collision_box = { { -0.4, -0.4 }, { 0.4, 0.4 } },
+        collision_mask = { layers = {} },
+        inventory_size = 65535,
+        inventory_type = "with_custom_stack_size",
+        inventory_properties = {
+            stack_size_max = 1,
+            with_bar = true
+        },
+        gui_mode = "admins"
+    }
+
+    data:extend({ main, loader, buffer })
 
     -- Chain upgrades with previous tier
     if tier.previous ~= nil then
