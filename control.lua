@@ -31,6 +31,7 @@ A modular-splitter entity is made of a linked_container buffer (modular-splitter
 -- Removing a segment can split its group; rotating one turns the connected line
 -- in place. After placement only 180 degree rotation is allowed.
 
+---@diagnostic disable-next-line: different-requires
 local CONST = require("prototypes/modular-splitter-constants")
 local DIR = defines.direction
 local CHEST = defines.inventory.chest
