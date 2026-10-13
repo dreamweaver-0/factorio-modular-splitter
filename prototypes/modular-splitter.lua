@@ -124,7 +124,7 @@ local function build_entity(tier)
         selection_box = { { -0.5, -0.5 }, { 0.5, 0.5 } },
         filter_count = 0,
         speed = belt.speed,
-        container_distance = 0.75,
+        container_distance = 1,
         belt_animation_set = belt.belt_animation_set,
         animation_speed_coefficient = belt.animation_speed_coefficient,
         structure = {

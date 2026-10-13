@@ -460,8 +460,13 @@ local function show_debug_inspector(player)
     local buffer = buffer_of(entity)
     content.add({ type = "label", caption = "Shared buffer inventory", style = "heading_2_label" })
     if buffer then
-        content.add({ type = "label", caption = "Buffer ID: " .. buffer.link_id })
-        add_item_rows(content, inv_of(buffer).get_contents())
+        local buffer_inventory = inv_of(buffer)
+        content.add({
+            type = "label",
+            caption = "Buffer entity: #" .. buffer.unit_number .. " | id=" .. buffer.link_id
+                .. " | inventory=" .. (buffer_inventory and "available" or "missing"),
+        })
+        add_item_rows(content, buffer_inventory and buffer_inventory.get_contents())
     else
         content.add({ type = "label", caption = "Buffer unavailable" })
     end
@@ -471,9 +476,13 @@ local function show_debug_inspector(player)
         local loader = rec and rec[side]
         if loader and loader.valid then
             local direction = DIR_NAME[loader.direction] or tostring(loader.direction)
+            local target = loader.loader_container
+            local target_name = target and target.valid
+                and (target.name .. " #" .. target.unit_number) or "unconnected"
             content.add({
                 type = "label",
-                caption = side .. " loader (" .. loader.loader_type .. ", facing " .. direction .. ")",
+                caption = side .. " loader (" .. loader.loader_type .. ", facing " .. direction
+                    .. ", target=" .. target_name .. ")",
             })
             add_item_rows(content, get_loader_contents(loader))
         else
@@ -546,6 +555,7 @@ local function destroy_loaders(rec)
     end
 end
 
+-- Purges stray parts around the modular splitter
 local function purge_strays(entity)
     local back, front = end_positions(entity)
     for _, pos in ipairs({ entity.position, back, front }) do
@@ -717,8 +727,8 @@ local function ensure_parts(entity, player_index)
     local rec = {}
     storage.segments[entity.unit_number] = rec
     rec.buffer = create_buffer(entity)
-    if not rec.buffer then
-        return reject(entity, player_index, "Modular Splitter: Failed to create buffer.")
+    if not rec.buffer or not inv_of(rec.buffer) then
+        return reject(entity, player_index, "Modular Splitter: Failed to create buffer inventory.")
     end
     create_loader_pair(entity, rec)
     if not (rec[DIR_NAME[DIR_OPPOSITE[entity.direction]]] and rec[DIR_NAME[entity.direction]]) then
