@@ -54,6 +54,8 @@ local DIR_VECTOR = {
     [DIR.west] = { x = -1, y = 0 },
 }
 
+require("scripts/buffer-id-handler")
+
 -- Prints debug messages to chat, toggled by modular-splitter-constants
 local function debug_event(event_name, entity, details)
     if not CONST.debug_events then
