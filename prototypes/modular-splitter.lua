@@ -22,6 +22,17 @@ local HIDDEN_FLAGS = {
     "not-upgradable"
 }
 
+local collision_mask_util = require("__core__/lualib/collision-mask-util")
+-- private collision player for hidden splitter parts
+if not data.raw["collision-layer"]["modular_splitter_part"] then
+    data:extend({
+        {
+            type = "collision-layer",
+            name = "modular_splitter_part"
+        }
+    })
+end
+
 function ModularSplitters.entity_name(prefix)
     if prefix == "" then
         return BASE_NAME
@@ -36,6 +47,10 @@ end
 
 function ModularSplitters.buffer_name(prefix)
     return ModularSplitters.entity_name(prefix) .. "-buffer"
+end
+
+function ModularSplitters.buffer_proxy_name(prefix)
+    return ModularSplitters.buffer_name(prefix) .. "-loader-target"
 end
 
 local function icons_for(tier)
@@ -98,6 +113,7 @@ local function build_entity(tier)
     local name = ModularSplitters.entity_name(tier.name)
     local loader_name = ModularSplitters.loader_name(tier.name)
     local buffer_name = ModularSplitters.buffer_name(tier.name)
+    --local buffer_proxy_name = ModularSplitters.buffer_proxy_name(tier.name)
     local belt = data.raw["transport-belt"][tier.belt]
     assert(belt, "modular-splitter: unknown belt tier '" .. tostring(tier.belt) .. "'")
 
@@ -117,29 +133,11 @@ local function build_entity(tier)
         fast_replaceable_group = "modular-splitter"
     }
 
-    local loader = {
-        type = "loader-1x1",
-        name = loader_name,
-        icons = icons_for(tier),
-        flags = HIDDEN_FLAGS,
-        hidden = true,
-        selectable_in_game = false,
-        max_health = 170,
-        collision_box = { { -0.4, -0.45 }, { 0.4, 0.45 } },
-        selection_box = { { -0.5, -0.5 }, { 0.5, 0.5 } },
-        filter_count = 0,
-        speed = belt.speed,
-        container_distance = 1,
-        belt_animation_set = belt.belt_animation_set,
-        animation_speed_coefficient = belt.animation_speed_coefficient,
-        structure = {
-            direction_in = { north = EMPTY_SPRITE, east = EMPTY_SPRITE, south = EMPTY_SPRITE, west = EMPTY_SPRITE },
-            direction_out = { north = EMPTY_SPRITE, east = EMPTY_SPRITE, south = EMPTY_SPRITE, west = EMPTY_SPRITE }
-        }
-    }
+    local loader_mask = table.deepcopy(collision_mask_util.get_default_mask("loader-1x1"))
+    loader_mask.layers.modular_splitter_part = true;
 
     local buffer = {
-        type = "linked-container",
+        type = "container",
         name = buffer_name,
         icons = icons_for(tier),
         --flags = HIDDEN_FLAGS,
@@ -147,7 +145,7 @@ local function build_entity(tier)
         selectable_in_game = true,
         max_health = 170,
         collision_box = { { -0.4, -0.4 }, { 0.4, 0.4 } },
-        collision_mask = { layers = {} },
+        collision_mask = { layers = { modular_splitter_part = true } },
         inventory_size = 65535,
         inventory_type = "with_custom_stack_size",
         inventory_properties = {
@@ -157,7 +155,42 @@ local function build_entity(tier)
         gui_mode = "admins"
     }
 
-    data:extend({ main, loader, buffer })
+    local loader = {
+        type = "loader-1x1",
+        name = loader_name,
+        icons = icons_for(tier),
+        flags = HIDDEN_FLAGS,
+        hidden = true,
+        selectable_in_game = false,
+        max_health = 170,
+        collision_box = { { -0.4, -0.45 }, { 0.4, 0.45 } },
+        collision_mask = loader_mask,
+        selection_box = { { -0.5, -0.5 }, { 0.5, 0.5 } },
+        filter_count = 0,
+        speed = belt.speed,
+        container_distance = 1,
+        allow_container_interaction = true,
+        belt_animation_set = belt.belt_animation_set,
+        animation_speed_coefficient = belt.animation_speed_coefficient,
+        structure = {
+            direction_in = { north = EMPTY_SPRITE, east = EMPTY_SPRITE, south = EMPTY_SPRITE, west = EMPTY_SPRITE },
+            direction_out = { north = EMPTY_SPRITE, east = EMPTY_SPRITE, south = EMPTY_SPRITE, west = EMPTY_SPRITE }
+        }
+    }
+
+    --[[ local buffer_proxy = {
+        type = "proxy-container",
+        name = buffer_proxy_name,
+        icons = icons_for(tier),
+        --flags = HIDDEN_FLAGS,
+        --hidden = true,
+        selectable_in_game = true,
+        max_health = 170,
+        collision_box = { { -0.4, -0.4 }, { 0.4, 0.4 } },
+        collision_mask = { layers = {} },
+    } ]]
+
+    data:extend({ main, buffer, loader })
 
     -- Chain upgrades with previous tier
     if tier.previous ~= nil then
@@ -169,11 +202,11 @@ local function build_entity(tier)
 
     -- Hidden per-segment buffer (created once). Every segment owns one of these 1x1
     -- containers at its center tile; merged segments share an inventory via link_id.
-    if not data.raw["linked-container"][CONST.buffer_name] then
+    --[[ if not data.raw["container"][CONST.buffer_name] then
     local chest = data.raw["item"]["steel-chest"]
     data:extend({
         {
-            type = "linked-container",
+            type = "container",
             name = CONST.buffer_name,
             icon = chest.icon,
             icon_size = chest.icon_size or 64,
@@ -189,7 +222,7 @@ local function build_entity(tier)
             collision_mask = { layers = {} }
         },
     })
-    end
+    end ]]
 end
 
 local function build_recipe(tier)
