@@ -4,18 +4,17 @@ local CONST = require("prototypes/modular-splitter-constants")
 function init_id_storage()
     storage.groups = storage.groups or {}
     storage.free_ids = storage.free_ids or {}
-    storage.next_id = storage.next_id or CONST.link_id_base
     storage.inspector_targets = storage.inspector_targets or {}
 end
 
----Checks the list of free buffer IDS to reuse one. If none are available, give the new buffer the next ID based on storage.next_id
+---Checks the list of free buffer IDS to reuse one. If none are available, give the new buffer the next ID based on the list of tracked
+---@return number
 function alloc_buffer_id()
-    local id = table.remove(storage.free_ids)
+    local id = table.remove(storage.free_ids, 0)
     if not id then
-        id = storage.next_id
-        storage.next_id = storage.next_id + 1
+        id = (0 < #storage.groups) and (storage.groups[#storage.groups] + 1) or CONST.link_id_base
     end
-    storage.groups[id] = true
+    storage.groups[#storage.groups + 1] = id
     return id
 end
 
@@ -24,5 +23,6 @@ function free_buffer_id(id)
     if id and storage.groups[id] then
         storage.groups[id] = nil
         storage.free_ids[#storage.free_ids + 1] = id
+        table.sort(storage.free_ids)
     end
 end
