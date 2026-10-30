@@ -5,6 +5,7 @@ function init_id_storage()
     -- Stores a list of active IDs in the world
     storage.active_ids = storage.active_ids or {}
     -- Stores a list of tables that reference all active groups in the world
+    -- { group_id: { modular-splitter: { modular-splitter-buffer, modular-splitter-loader, modular-splitter-loader}, }, }
     storage.groups = storage.groups or {}
     -- Stores a list of freed IDs that are no longer used by any buffer groups
     storage.free_ids = storage.free_ids or {}
