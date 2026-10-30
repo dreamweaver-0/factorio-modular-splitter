@@ -23,6 +23,26 @@ function alloc_buffer_id()
     return id
 end
 
+---Adds the table of modsplitter_part entities to a list of tracked segments to know what entities are part of what modsplitter segment
+---@param modsplitter_parts table
+function register_segment(modsplitter_parts)
+    if not modsplitter_parts or
+            not modsplitter_parts.main or
+            not modsplitter_parts.buffer or
+            not modsplitter_parts.loader_in or
+            not modsplitter_parts.loader_out then
+        return
+    else
+        local id = modsplitter_parts.buffer.link_id
+        if not id then
+            return -- error
+        end
+        local main_entity = table.remove(modsplitter_parts, modsplitter_parts.main)
+        local group = storage.groups[id] or {}
+        group[main_entity] = modsplitter_parts
+    end
+end
+
 ---Removes the given ID from tracked buffer IDs, add it to the list of free IDs
 function free_buffer_id(id)
     if id and storage.active_ids[id] then
